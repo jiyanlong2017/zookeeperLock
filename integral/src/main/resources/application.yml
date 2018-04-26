@@ -1,0 +1,63 @@
+server:
+  port: 8066
+spring:
+  application:
+    name: integral
+  datasource:
+    url: jdbc:mysql://localhost:3306/integral
+    username: admin
+    password: 1234
+#    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+
+
+feign:
+  hystrix:
+    enabled: true
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000
+  threadpool:
+    default:
+      coreSize: 500 #缺省为10
+
+#svcb-service:
+#  ribbon:
+#    ReadTimeout: 3000
+#    ConnectTimeout: 500
+#    MaxAutoRetries: 1
+#    MaxAutoRetriesNextServer: 3
+
+#    OkToRetryOnAllOperations: true
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}:${random.int[0,999]}
+#    health-check-url-path: ${server.context-path}${management.context-path}/health
+#    status-page-url-path: ${server.context-path}${management.context-path}/info
+    hostname: local
+    prefer-ip-address: true
+#    metadata-map:
+#      user.name: ${security.user.name}
+#      user.password: ${security.user.password}
+#      management.context-path: ${server.context-path}${management.context-path}
+  client:
+    service-url:
+      defaultZone: http://${SPRING_CLOUD_EUREKA_URI:127.0.0.1:8761}/eureka/
+
+
+

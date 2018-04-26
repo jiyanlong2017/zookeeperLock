@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer.js"></script>
+
+</head>
+<body>
+<!--/*@thymesVar id="name" type="java.lang.String"*/-->
+<form>
+    <input id="username" placeholder="请输入用户名"/>
+    <br/>
+    <input id="password"  placeholder="请输入密码"/>
+    <br/>
+</form>
+<button id="submit">登录</button>
+
+<script>
+    $("#submit").click(function () {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var url = 'uaa/login';
+
+        $.ajax({
+            url: url,
+            data: {'username': username, 'password': password},
+            method: 'post',
+            success: function (value) {
+                if (value !== "账号密码错误") {
+                    var token = value;
+                    console.log(token);
+                    localStorage.token = token;
+                    window.location.href="index";
+
+                }
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

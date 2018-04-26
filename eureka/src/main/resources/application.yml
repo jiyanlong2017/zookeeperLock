@@ -1,0 +1,24 @@
+
+server:
+  port: 8761
+eureka:
+  instance:
+    hostname: localhost
+#    prefer-ip-address: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+#        defaultZone: http://${security.user.name}:${security.user.password}@localhost:8761/eureka
+  server:
+    enable-self-preservation: true
+    renewalPercentThreshold: 0.40
+#    eviction-interval-timer-in-ms: 4000
+    renewal-threshold-update-interval-ms: 60000  #阈值更新的时间间隔，单位为毫秒，默认为15 * 60 * 1000
+
+
+
+
+
+

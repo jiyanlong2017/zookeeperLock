@@ -1,0 +1,38 @@
+#spring:
+#  application:
+#    name: svcb-service
+#  cloud:
+#    config:
+#      uri: http://127.0.0.1:8888
+#      fail-fast: true
+#      username: user
+#      password: ${CONFIG_SERVER_PASSWORD:password}
+#      retry:
+#        initial-interval: 2000
+#        max-interval: 10000
+#        multiplier: 2
+#        max-attempts: 10
+
+spring:
+  application:
+    name: svcb-service
+  profiles:
+    active:
+  cloud:
+    config:
+      uri: ${SPRING_CLOUD_CONFIG_URI:http://127.0.0.1:8888}
+      fail-fast: true
+      username: user
+      password: ${CONFIG_SERVER_PASSWORD:password}
+      retry:
+        initial-interval: 2000 #初始重试间隔
+        max-interval: 10000 #最大重试间隔
+        multiplier: 2 #每次重试是之前的备注
+        max-attempts: 10 #最大重试次数
+      name: svcb-service
+#      profile: ocp
+      label: master
+    bus:
+      trace:
+        enabled: true
+

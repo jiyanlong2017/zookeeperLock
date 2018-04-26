@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="layer.js"></script>
+
+    <title>主页</title>
+</head>
+<body>
+
+测试服务调用关系
+<br/>
+
+测试A服务调用B服务：<button id="ab">A->B</button>
+<br/>
+测试C服务调用B服务：
+<button id="cb">C->B</button>
+<br/>
+<a href="login">登录</a>
+
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        cache: false,
+        timeout: 20000,
+        beforeSend: function (XMLHttpRequest) {
+            // var token = "eyJhbGciOiJIUzUxMiJ9.eyJjcmVhdGVkIjoxNTA0NTc5MjU5MzI4LCJ0eXBlIjoxLCJleHAiOjE1MDQ1ODY0NTksInVzZXIiOiIzNzc3MzEyNjIifQ.xFe_dzEINNp1Tr1cvg-j8gCQixTOVQiGDddaOzVPNvrZjQUEjkr5LpwWVqIFkNvLEkG8LrZRTyfsh0lIQdx4SQ";
+            XMLHttpRequest.setRequestHeader("token", localStorage.token);
+        },
+        complete: function (XMLHttpRequest, textStatus) {
+            if (XMLHttpRequest.status === 403) {
+                layer.alert("没有权限");
+                // layer.alert('请先登录', {
+                //     icon: 2
+                // }, function () {
+                //     layer.close();
+                //     window.location.href = "index.html#login";
+                // })
+            }
+
+        }
+    });
+    $("#ab").click(function () {
+        $.get('/svca', function (value) {
+
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-demo', //样式类名
+                closeBtn: 0, //不显示关闭按钮
+                anim: 2,
+                shadeClose: true, //开启遮罩关闭
+                content: value
+            });
+
+        });
+    });
+
+    $("#cb").click(function () {
+
+
+        $.get('/svcc', function (value) {
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-demo', //样式类名
+                closeBtn: 0, //不显示关闭按钮
+                anim: 2,
+                shadeClose: true, //开启遮罩关闭
+                content: value
+            });
+        });
+
+
+    });
+</script>
+</body>
+</html>

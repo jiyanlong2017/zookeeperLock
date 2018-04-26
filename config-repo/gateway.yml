@@ -1,0 +1,149 @@
+server:
+  port: 8086
+spring:
+  cloud:
+    stream:
+      bindings:
+        sleuth:
+          destination: sleuth-jyl
+          binder: rabbit
+      binders:
+        rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: 11.11.136.141
+                port: 5672
+                username: guest
+                password: guest
+                listener:
+                  simple:
+                    concurrency: 2
+                    max-concurrency: 2
+
+  application:
+    name: gateway
+#  rabbitmq:
+#    host: 11.11.136.141
+#    port: 5672
+#    username: guest
+#    password: guest
+#    listener:
+#      simple:
+#        concurrency: 2
+#        max-concurrency: 2
+  profiles:
+    active: dev
+  sleuth:
+    integration:
+      enabled: false
+    scheduled:
+      skip-pattern: "^org.*HystrixStreamTask$"
+    sampler:
+      percentage: 1
+  redis:
+    host: 11.11.136.121
+    port: 31924
+    password: cCA5Ba4IjrhLAEm0
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1
+      min-idle: 0
+  rabbitmq:
+    host: 11.11.136.141
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        concurrency: 2
+        max-concurrency: 2
+
+management:
+  security:
+    enabled: false
+  health:
+      rabbit:
+        enabled: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+  threadpool:
+    default:
+      coreSize: 500 #缺省为10
+  stream:
+    queue:
+      destination: hystrix-jyl
+
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 3000
+  MaxAutoRetriesNextServer: 3
+zuul:
+  ignoredServices:
+  routes:
+    auth-service:
+      path: /uaa/**
+      stripPrefix: false
+      sensitiveHeaders:
+    svca-service:
+      path: /svca/**
+      sensitiveHeaders:
+    svcb-service:
+      path: /svcb/**
+      sensitiveHeaders:
+    svcc-service:
+      path: /svcc/**
+      sensitiveHeaders:
+  ratelimit:
+    enabled: true
+    repository: REDIS
+    behind-proxy: true #default false
+    policies:
+      svcc-service:
+        limit: 20 #optional - request number limit per refresh interval window
+        quota: 50 #optional - request time limit per refresh interval window (in seconds)
+        refresh-interval: 30 #default value (in seconds)
+        type:
+#          - user
+#          - origin
+          - url
+eureka:
+  instance:
+    hostname: gateway
+    prefer-ip-address: true
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    service-url:
+      defaultZone: http://user:${REGISTRY_SERVER_PASSWORD:password}@${SPRING_CLOUD_EUREKA_URI:127.0.0.1:8761}/eureka/
+
+
+# 服务限流配置
+#service:
+#  ratelimit:
+#    enabled: true
+#    policies:
+#      svcc-service:
+#        limit: 20
+#        refreshInterval: 30
+#        types:
+#          - user
+#      svca-service:
+#        limit: 10
+#        refreshInterval: 60
+#        types:
+#          - url
+---
+spring:
+  profiles: ocp
+server:
+  port: 8080

@@ -1,0 +1,71 @@
+server:
+  port: 0
+spring:
+  application:
+    name: svcc-service
+  profiles:
+    active: dev
+  rabbitmq:
+    host: 11.11.136.141
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        concurrency: 2
+        max-concurrency: 2
+  sleuth:
+    integration:
+      enabled: false
+    scheduled:
+      skip-pattern: "^org.*HystrixStreamTask$"
+    sampler:
+      percentage: 1
+  cloud:
+    stream:
+      bindings:
+        sleuth:
+          destination: sleuth-jyl
+
+name: 李四
+
+management:
+  security:
+    enabled: false
+  health:
+      rabbit:
+        enabled: false
+feign:
+  hystrix:
+    enabled: true
+
+ribbon:
+  ReadTimeout: 3000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+  stream:
+    queue:
+      destination: hystrix-jyl
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}:${random.int[0,999]}
+    hostname: svcc
+    prefer-ip-address: true
+    metadata-map:
+      lancher: 0
+  client:
+    service-url:
+      defaultZone: http://user:${REGISTRY_SERVER_PASSWORD:password}@${SPRING_CLOUD_EUREKA_URI:127.0.0.1:8761}/eureka/
+---
+spring:
+  profiles: ocp
+server:
+  port: 8080
+
